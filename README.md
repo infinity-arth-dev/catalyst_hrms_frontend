@@ -1,4 +1,4 @@
-# 🏢 Infinity Arthvishva HRMS Portal
+# 🏢 Catalyst Biomedical  HRMS Portal
 
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
@@ -7,7 +7,7 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Express.js](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge)
 
-A comprehensive human resource management web application designed for Infinity Arthvishva to manage employee records, track daily attendance with strict validation logic, manage company holidays and leaves, and handle administrative HR profiles.
+A comprehensive human resource management web application designed for Catalyst Biomedical  to manage employee records, track daily attendance with strict validation logic, manage company holidays and leaves, and handle administrative HR profiles.
 
 ---
 

@@ -93,7 +93,7 @@ export default function DepartmentsAndPositionsPage() {
         {deptRole === 'HR' && activeTab === 'departments' && (
           <button
             onClick={handleDeptAddClick}
-            className="flex items-center gap-2 bg-gradient-to-r from-brand-blue to-brand-green text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:shadow-lg transition-all cursor-pointer"
+            className="flex items-center gap-2 bg-brand-blue hover:opacity-95 shadow-md shadow-brand-blue/30 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:shadow-lg transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" /> Add Department
           </button>
@@ -101,7 +101,7 @@ export default function DepartmentsAndPositionsPage() {
         {deptRole === 'HR' && activeTab === 'positions' && (
           <button
             onClick={handlePosAddClick}
-            className="flex items-center gap-2 bg-gradient-to-r from-brand-blue to-brand-green text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:shadow-lg transition-all cursor-pointer"
+            className="flex items-center gap-2 bg-brand-blue hover:opacity-95 shadow-md shadow-brand-blue/30 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:shadow-lg transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" /> Add Position
           </button>

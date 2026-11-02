@@ -5,7 +5,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Menu, X, LogOut } from "lucide-react";
-import GradientText from "../elements/GradientText";
 import { DASHBOARD_NAV } from "@/constants/Sidebar/navigation";
 import ThemeToggleSwitch from "../buttons/ThemeToggle";
 
@@ -37,11 +36,13 @@ export default function DashboardSidebar() {
         <>
             {/* MOBILE TOP HEADER */}
             <header className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white dark:bg-primary border-b border-gray-100 dark:border-white/5 flex items-center justify-between px-4 z-40">
-                <Link href="/dashboard" className="flex items-center gap-2 font-bold">
-                    <Image src="/images/icon.png" alt="IA HRMS" width={35} height={35} className="rounded-md" />
-                    <GradientText from="var(--color-brand-blue)" to="var(--color-brand-green)" className="tracking-widest text-xl font-extrabold uppercase">
-                        HRMS
-                    </GradientText>
+                <Link href="/dashboard" className="flex items-center gap-2.5">
+                    <Image src="/images/icon.png" alt="Catalyst Biomedical" width={32} height={32} className="w-8 h-8 object-contain rounded-full shrink-0" />
+                    <div className="flex flex-col leading-[1.05]">
+                        <span className="text-[11px] font-black text-primary dark:text-white uppercase tracking-tight">CATALYST</span>
+                        <span className="text-[11px] font-black text-primary dark:text-white uppercase tracking-tight">BIOMEDICAL</span>
+                        <span className="text-[9px] font-black text-brand-blue uppercase tracking-wider mt-0.5">HRMS</span>
+                    </div>
                 </Link>
                 <button
                     onClick={() => setIsMobileMenuOpen(true)}
@@ -66,11 +67,13 @@ export default function DashboardSidebar() {
             >
                 {/* Sidebar Header */}
                 <div className="h-16 md:h-24 flex items-center justify-between px-6 border-b border-gray-100 dark:border-white/5 shrink-0">
-                    <Link href="/dashboard" className="flex items-center gap-2 text-xl font-bold tracking-tight">
-                        <Image src="/images/icon.png" alt="IA HRMS" width={32} height={32} className="rounded-md" />
-                        <GradientText from="var(--color-brand-blue)" to="var(--color-brand-green)" className="uppercase tracking-widest font-extrabold">
-                            HRMS
-                        </GradientText>
+                    <Link href="/dashboard" className="flex items-center gap-3">
+                        <Image src="/images/icon.png" alt="Catalyst Biomedical" width={36} height={36} className="w-9 h-9 object-contain rounded-full shrink-0" />
+                        <div className="flex flex-col leading-[1.1]">
+                            <span className="text-xs font-black text-primary dark:text-white uppercase tracking-tight">CATALYST</span>
+                            <span className="text-xs font-black text-primary dark:text-white uppercase tracking-tight">BIOMEDICAL</span>
+                            <span className="text-[10px] font-black text-brand-blue uppercase tracking-wider mt-0.5">HRMS</span>
+                        </div>
                     </Link>
                     <button onClick={closeMobileMenu} className="md:hidden text-gray-500 hover:text-primary dark:hover:text-white">
                         <X className="w-6 h-6" />
@@ -120,12 +123,12 @@ export default function DashboardSidebar() {
                                                 key={item.url}
                                                 href={item.url}
                                                 onClick={closeMobileMenu}
-                                                className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${isActive
-                                                    ? "bg-gradient-to-r from-brand-blue to-brand-green text-white dark:bg-white dark:text-primary shadow-md"
+                                                className={`flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm transition-all duration-200 ${isActive
+                                                    ? "bg-brand-blue text-white font-semibold shadow-md shadow-brand-blue/30"
                                                     : "text-secondary dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white"
                                                     }`}
                                             >
-                                                <Icon className={`w-5 h-5 ${isActive ? "" : "opacity-70"}`} />
+                                                <Icon className={`w-5 h-5 ${isActive ? "text-white" : "opacity-70"}`} />
                                                 {item.title}
                                             </Link>
                                         );

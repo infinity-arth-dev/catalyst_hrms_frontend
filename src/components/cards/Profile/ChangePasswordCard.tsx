@@ -119,7 +119,7 @@ export default function ChangePasswordCard() {
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full sm:w-auto px-6 py-2.5 font-semibold text-sm rounded-xl text-white bg-gradient-to-r from-brand-blue to-brand-green disabled:opacity-50 transition-all shadow-md shadow-brand-blue/10 active:scale-[0.98]"
+                        className="w-full sm:w-auto px-6 py-2.5 font-semibold text-sm rounded-xl text-white bg-brand-blue hover:opacity-95 shadow-md shadow-brand-blue/30 disabled:opacity-50 transition-all shadow-md shadow-brand-blue/10 active:scale-[0.98]"
                     >
                         {isSubmitting ? "Updating Configuration..." : "Update Security Matrix"}
                     </button>

@@ -109,7 +109,7 @@ export default function LeaveInbox() {
                             </button>
                             <button
                                 onClick={() => handleApprove(req.leaveId)}
-                                className="flex-1 py-2 text-sm font-medium text-white bg-gradient-to-r from-brand-blue to-brand-green hover:bg-primary/90 rounded-lg transition-colors shadow-sm shadow-primary/30"
+                                className="flex-1 py-2 text-sm font-medium text-white bg-brand-blue hover:opacity-95 shadow-md shadow-brand-blue/30 hover:bg-primary/90 rounded-lg transition-colors shadow-sm shadow-primary/30"
                             >
                                 Approve Leave
                             </button>

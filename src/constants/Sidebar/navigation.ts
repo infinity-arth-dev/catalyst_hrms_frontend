@@ -80,13 +80,7 @@ export const DASHBOARD_NAV = [
                 requiredRoles: ["HR", "DIRECTOR"],
             },
 
-              {
-                title: "Letters",
-                url: "/dashboard/letters",
-                icon: FileText,
-                requiredRoles: ["HR"],
-              
-            },
+            
             {
                 title: "Complaints",
                 url: "/dashboard/complaints",

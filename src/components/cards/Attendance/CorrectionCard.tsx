@@ -136,7 +136,7 @@ export default function CorrectionCard({
                             </button>
                             <button
                                 onClick={() => onApprove && onApprove(req.attendanceId)}
-                                className="flex-1 py-2 text-sm font-medium text-white bg-gradient-to-r from-brand-blue to-brand-green rounded-lg transition-colors shadow-sm shadow-primary/30"
+                                className="flex-1 py-2 text-sm font-medium text-white bg-brand-blue hover:opacity-95 shadow-md shadow-brand-blue/30 rounded-lg transition-colors shadow-sm shadow-primary/30"
                             >
                                 Approve
                             </button>

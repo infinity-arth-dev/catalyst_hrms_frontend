@@ -50,7 +50,7 @@ export default function PortalOverviewPage() {
       {/* 1. Header */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         <div className="w-14 h-14 bg-white dark:bg-primary rounded-xl flex items-center justify-center border border-gray-100 dark:border-gray-800 shadow-sm transition-colors shrink-0">
-          <Sun className="w-7 h-7 text-brand-green" />
+          <Sun className="w-7 h-7 text-brand-orange" />
         </div>
         <div>
           <h1 className="text-2xl md:text-[28px] font-bold text-primary dark:text-white tracking-tight">
@@ -75,24 +75,28 @@ export default function PortalOverviewPage() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           <QuickActionCard
+            color="blue"
             icon={<Clock className="w-5 h-5" />}
             title="Mark Attendance"
             desc="Check in or check out"
             href="/portal/attendance"
           />
           <QuickActionCard
+            color="orange"
             icon={<ClipboardList className="w-5 h-5" />}
             title="Attendance Summary"
             desc="View your monthly logs"
             href="/portal/attendance/summary"
           />
           <QuickActionCard
+            color="blue"
             icon={<Calendar className="w-5 h-5" />}
             title="Apply Leave"
             desc="Request time off"
             href="/portal/leaves"
           />
           <QuickActionCard
+            color="orange"
             icon={<FileText className="w-5 h-5" />}
             title="View Salary Slip"
             desc="Download payslip"
@@ -133,10 +137,10 @@ export default function PortalOverviewPage() {
                     {/* Status Badges */}
                     <div className="flex flex-wrap items-center gap-2">
                       <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border shadow-sm ${data.punchStatus.isPunchedIn
-                        ? "bg-brand-green/10 text-brand-green border-brand-green/20"
+                        ? "bg-brand-blue/10 text-brand-blue border-brand-blue/20"
                         : "bg-gray-50 text-secondary dark:bg-white/5 dark:text-gray-400 border-gray-200 dark:border-gray-700"
                         }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${data.punchStatus.isPunchedIn ? "bg-brand-green animate-pulse" : "bg-gray-400"}`}></span>
+                        <span className={`w-1.5 h-1.5 rounded-full ${data.punchStatus.isPunchedIn ? "bg-brand-blue animate-pulse" : "bg-gray-400"}`}></span>
                         {data.punchStatus.isPunchedIn ? "ON DUTY" : "OFF DUTY"}
                       </div>
 
@@ -147,7 +151,7 @@ export default function PortalOverviewPage() {
                       </div>
 
                       {data.punchStatus.isLate && (
-                        <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400 border border-red-200 dark:border-red-900/30">
+                        <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-brand-orange/10 text-brand-orange border border-brand-orange/20">
                           <Timer className="w-3 h-3" />
                           LATE
                         </div>
@@ -240,19 +244,19 @@ export default function PortalOverviewPage() {
             title="Present"
             value={data?.stats?.presentDays?.toString() || "0"}
             subtitle="Working days"
-            icon={<CheckCircle2 className="w-5 h-5" />}
+            icon={<CheckCircle2 className="w-5 h-5 text-brand-blue" />}
           />
           <PerformanceCard
             title="Absent"
             value={data?.stats?.workingDays ? (data.stats.workingDays - data.stats.presentDays).toString() : "0"}
             subtitle="Missed days"
-            icon={<XCircle className="w-5 h-5 text-red-500" />}
+            icon={<XCircle className="w-5 h-5 text-brand-orange" />}
           />
           <PerformanceCard
             title="Late Arrivals"
             value={data?.stats?.lateArrivals?.toString() || "0"}
             subtitle="Late logins"
-            icon={<Timer className="w-5 h-5 text-orange-500" />}
+            icon={<Timer className="w-5 h-5 text-brand-orange" />}
           />
           <PerformanceCard
             title="Avg Hours"

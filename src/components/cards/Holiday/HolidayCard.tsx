@@ -41,7 +41,7 @@ export const HolidayCard: React.FC<HolidayCardProps> = ({ holiday, onDelete }) =
             <div className="flex-shrink-0 flex flex-col items-center justify-center w-16 h-16 rounded-xl border border-secondary/20 dark:border-secondary/30 bg-white dark:bg-[#16101B] shadow-sm overflow-hidden">
                 <div
                     className={`text-white text-[11px] font-bold w-full text-center py-0.5 uppercase tracking-wider ${isActive
-                            ? 'bg-gradient-to-r from-brand-blue to-brand-green'
+                            ? 'bg-brand-blue hover:opacity-95 shadow-md shadow-brand-blue/30'
                             : 'bg-gray-500 dark:bg-gray-600'
                         }`}
                 >

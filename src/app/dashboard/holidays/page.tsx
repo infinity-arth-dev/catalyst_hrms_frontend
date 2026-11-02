@@ -60,7 +60,7 @@ export default function HolidaysPage() {
           {isHR && (
             <button
               onClick={() => setIsModalOpen(true)}
-              className="flex items-center gap-2 bg-gradient-to-r from-brand-blue to-brand-green hover:opacity-90 text-white px-4 py-2.5 rounded-xl font-medium transition-opacity shadow-sm cursor-pointer"
+              className="flex items-center gap-2 bg-brand-blue hover:opacity-95 shadow-md shadow-brand-blue/30 hover:opacity-90 text-white px-4 py-2.5 rounded-xl font-medium transition-opacity shadow-sm cursor-pointer"
             >
               <Plus size={18} />
               <span>Add Holiday</span>

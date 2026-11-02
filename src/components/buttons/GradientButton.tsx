@@ -1,5 +1,3 @@
-
-
 import React, { ButtonHTMLAttributes } from "react";
 
 interface GradientButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -16,27 +14,30 @@ interface GradientButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export default function GradientButton({
     children,
-    from = "var(--color-brand-blue)", // Defaults to your adaptive brand colors
-    to = "var(--color-brand-green)",
+    from,
+    to,
     direction = "to right",
     className = "",
     disabled = false,
     ...props
 }: GradientButtonProps) {
+    const hasCustomGradient = Boolean(from && to && from !== to);
+
     return (
         <button
             disabled={disabled}
-            className={`relative overflow-hidden cursor-pointer rounded-xl px-8 py-3.5 font-bold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:active:scale-100 ${className}`}
-            style={{
-                backgroundImage: `linear-gradient(${direction}, ${from}, ${to})`,
-            }}
+            className={`relative overflow-hidden cursor-pointer rounded-xl px-7 py-3 font-semibold text-white bg-brand-blue shadow-md shadow-brand-blue/30 transition-all duration-300 hover:bg-opacity-95 hover:shadow-lg hover:-translate-y-0.5 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:active:scale-100 ${className}`}
+            style={
+                hasCustomGradient
+                    ? { backgroundImage: `linear-gradient(${direction}, ${from}, ${to})` }
+                    : { backgroundColor: "var(--color-brand-blue)" }
+            }
             {...props}
         >
-            {/* This absolute div creates a subtle darken/lighten effect on hover 
-                without breaking the underlying dynamic gradient. */}
-            <div className="absolute inset-0 bg-black/0 transition-colors duration-300 hover:bg-black/10 dark:hover:bg-white/10" />
+            {/* Subtle hover overlay */}
+            <div className="absolute inset-0 bg-black/0 transition-colors duration-300 hover:bg-white/10" />
 
-            {/* The text needs to be relative with a z-index so it sits above the hover overlay */}
+            {/* Content */}
             <span className="relative z-10 flex items-center justify-center gap-2">
                 {children}
             </span>

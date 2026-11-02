@@ -100,7 +100,7 @@ export default function EmployeePage() {
               <button
                 onClick={() => setViewMode('list')}
                 className={`p-2 rounded-lg transition-all duration-200 ${viewMode === 'list'
-                  ? 'bg-white dark:bg-gray-800 shadow-sm text-brand-green'
+                  ? 'bg-white dark:bg-gray-800 shadow-sm text-brand-blue'
                   : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800'
                   }`}
               >

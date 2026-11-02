@@ -4,191 +4,96 @@ import { useState } from "react";
 import { PieChart } from "lucide-react";
 import { useDepartmentStats } from "@/hooks/dashboard-hooks/useDepartmentStats";
 
+// Colours based on the logo (blue, orange and their shades)
+const PALETTE = ["#05ABF0", "#F95F21", "#0382BD", "#FB9A6C", "#7DD3F7", "#C2410C", "#0E7490", "#FDBA74"];
+
 export default function DepartmentChart() {
-  // 1. Consume business logic from hook
   const { chartData, totalEmployees, loading } = useDepartmentStats();
+  const [hovered, setHovered] = useState<number | null>(null);
 
-  // 2. Keep purely visual state inside component
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
-  // SVG Donut Chart Math
   const radius = 70;
   const circumference = 2 * Math.PI * radius;
-  let currentOffset = 0;
-
-  const activeItem = hoveredIndex !== null ? chartData[hoveredIndex] : null;
+  let offsetDeg = 0;
+  const active = hovered !== null ? chartData[hovered] : null;
 
   return (
-    <div className="w-full bg-white dark:bg-primary p-5 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col items-center h-full relative overflow-hidden transition-colors duration-300">
+    <div className="h-full rounded-2xl bg-white dark:bg-primary border border-gray-200 dark:border-white/10 p-4 sm:p-5 flex flex-col">
+      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-5">Staff by department</h3>
 
-      {/* Header */}
-      <div className="w-full flex justify-between items-center mb-6 z-10 shrink-0">
-        <h3 className="text-lg font-bold text-primary dark:text-white">
-          Workforce by Department
-        </h3>
-      </div>
-
-      {/* Triple Check Content Area */}
       {loading ? (
-        // STATE 1: LOADING
-        <div className="w-full h-full flex flex-col items-center justify-center gap-3 animate-pulse pb-8">
-          <div className="w-32 h-32 rounded-full border-4 border-gray-100 dark:border-gray-800 border-t-blue-500 animate-spin"></div>
-          <span className="text-xs text-gray-400">Loading departments...</span>
+        <div className="flex-1 min-h-[260px] flex flex-col items-center justify-center gap-2 text-gray-400">
+          <div className="w-7 h-7 border-2 border-brand-blue border-t-transparent rounded-full animate-spin" />
+          <span className="text-xs">Loading...</span>
         </div>
       ) : chartData.length === 0 ? (
-        // STATE 2: EMPTY (No Data)
-        <div className="flex flex-col items-center justify-center h-full w-full py-8 text-center opacity-70 pb-12">
-          <div className="bg-blue-50 dark:bg-blue-500/10 p-4 rounded-full mb-3 text-blue-500">
-            <PieChart className="w-6 h-6" />
+        <div className="flex-1 min-h-[260px] flex flex-col items-center justify-center text-center">
+          <div className="bg-brand-blue/10 p-3 rounded-full mb-3 text-brand-blue">
+            <PieChart className="w-5 h-5" />
           </div>
-          <p className="text-sm font-semibold text-primary dark:text-white">
-            No Department Data
-          </p>
-          <p className="text-xs text-secondary dark:text-gray-400 mt-1 max-w-[180px]">
-            Employee department allocations are currently unavailable.
-          </p>
+          <p className="text-sm font-semibold text-gray-900 dark:text-white">No department data</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Departments will show here once added.</p>
         </div>
       ) : (
-        // STATE 3: DATA RENDER
-        <div className="flex flex-col md:flex-row items-center justify-between w-full h-full gap-8 z-10 overflow-y-auto no-scrollbar pb-2">
-
-          {/* Legend / List Area */}
-          <div
-            className="w-full md:w-1/2 flex flex-col gap-1.5 order-2 md:order-1 max-h-[240px] overflow-y-auto pl-2
-            /* --- Beautiful Custom Scrollbar --- */
-            [&::-webkit-scrollbar]:w-1.5
-            [&::-webkit-scrollbar-track]:bg-transparent
-            [&::-webkit-scrollbar-thumb]:bg-gray-200
-            dark:[&::-webkit-scrollbar-thumb]:bg-gray-700
-            [&::-webkit-scrollbar-thumb]:rounded-full
-            hover:[&::-webkit-scrollbar-thumb]:bg-gray-300
-            dark:hover:[&::-webkit-scrollbar-thumb]:bg-gray-600
-            transition-colors"
-            style={{ direction: "rtl" }} /* 1. Moves the scrollbar to the left */
-          >
-            {chartData.map((item, index) => {
-              const isHovered = hoveredIndex === index;
-              const isDimmed = hoveredIndex !== null && !isHovered;
-
-              return (
-                <div
-                  key={item.label}
-                  style={{ direction: "ltr" }} /* 2. Resets the text direction to normal */
-                  className={`
-                    group flex items-center justify-between py-2 px-3 rounded-xl cursor-pointer border transition-all duration-300
-                    ${isHovered
-                      ? "bg-gray-50 dark:bg-white/5 border-gray-100 dark:border-white/10 scale-[1.02] shadow-sm"
-                      : "bg-transparent border-transparent"
-                    }
-                    ${isDimmed ? "opacity-40 blur-[0.5px]" : "opacity-100"}
-                  `}
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                  onClick={() => setHoveredIndex(isHovered ? null : index)}
-                >
-                  <div className="flex items-center gap-3">
-                    <span
-                      className="w-2.5 h-2.5 rounded-full transition-all duration-300 shadow-sm shrink-0"
-                      style={{
-                        backgroundColor: item.color,
-                        boxShadow: isHovered
-                          ? `0 0 8px ${item.color}`
-                          : "none",
-                      }}
-                    ></span>
-                    <span
-                      className={`text-xs font-medium transition-colors truncate ${isHovered
-                        ? "text-primary dark:text-white font-bold"
-                        : "text-secondary dark:text-gray-400"
-                        }`}
-                    >
-                      {item.label}
-                    </span>
-                  </div>
-
-                  <span
-                    className={`text-sm font-bold transition-colors shrink-0 ${isHovered
-                      ? "text-primary dark:text-white"
-                      : "text-gray-400 dark:text-gray-600"
-                      }`}
-                  >
-                    {item.value}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* SVG Chart Area */}
-          <div className="w-full md:w-1/2 flex justify-center items-center relative order-1 md:order-2 shrink-0">
-            <div className="absolute flex flex-col items-center justify-center text-center pointer-events-none">
-              <span
-                className={`font-bold text-primary dark:text-white transition-all duration-300 ${activeItem ? "text-4xl scale-110" : "text-3xl"
-                  }`}
-              >
-                {activeItem ? activeItem.value : totalEmployees}
+        <div className="flex flex-col items-center gap-5 flex-1">
+          {/* Donut */}
+          <div className="relative shrink-0">
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+              <span className="text-3xl font-bold text-gray-900 dark:text-white">
+                {active ? active.value : totalEmployees}
               </span>
-              <span className="text-[10px] md:text-xs text-secondary dark:text-gray-400 font-bold uppercase tracking-wider mt-1 max-w-[80px] leading-tight">
-                {activeItem ? activeItem.label : "Total Staff"}
+              <span className="text-xs text-gray-500 dark:text-gray-400 max-w-[90px] leading-tight mt-0.5">
+                {active ? active.label : "Total staff"}
               </span>
             </div>
 
-            <svg
-              className="w-48 h-48 md:w-52 md:h-52 transform -rotate-90 overflow-visible"
-              viewBox="0 0 200 200"
-            >
-              {/* Background Circle */}
-              <circle
-                cx="100"
-                cy="100"
-                r={radius}
-                fill="none"
-                stroke="currentColor"
-                className="text-gray-100 dark:text-gray-800"
-                strokeWidth="14"
-              />
-
-              {/* Data Segments */}
-              {chartData.map((item, index) => {
-                const strokeDashoffset =
-                  circumference - (item.percentage / 100) * circumference;
-                const rotation = currentOffset;
-                currentOffset += (item.percentage / 100) * 360;
-
-                const isHovered = hoveredIndex === index;
-                const isDimmed = hoveredIndex !== null && !isHovered;
-
+            <svg className="w-44 h-44 -rotate-90" viewBox="0 0 200 200">
+              <circle cx="100" cy="100" r={radius} fill="none" strokeWidth="16" stroke="currentColor" className="text-gray-100 dark:text-white/5" />
+              {chartData.map((item, i) => {
+                const dash = (item.percentage / 100) * circumference;
+                const rot = offsetDeg;
+                offsetDeg += (item.percentage / 100) * 360;
+                const isHover = hovered === i;
+                const dim = hovered !== null && !isHover;
                 return (
                   <circle
-                    key={index}
+                    key={i}
                     cx="100"
                     cy="100"
                     r={radius}
                     fill="none"
-                    stroke={item.color}
-                    strokeWidth={isHovered ? 22 : 14}
-                    strokeDasharray={circumference}
-                    strokeDashoffset={strokeDashoffset}
-                    strokeLinecap="round"
-                    className={`transition-all duration-500 ease-out cursor-pointer ${isDimmed ? "opacity-20" : "opacity-100"
-                      }`}
-                    style={{
-                      transformBox: "fill-box",
-                      transformOrigin: "center",
-                      transform: `rotate(${rotation}deg) scale(${isHovered ? 1.05 : 1
-                        })`,
-                      filter: isHovered
-                        ? `drop-shadow(0 0 6px ${item.color}80)`
-                        : "none",
-                    }}
-                    onMouseEnter={() => setHoveredIndex(index)}
-                    onMouseLeave={() => setHoveredIndex(null)}
-                    onClick={() => setHoveredIndex(isHovered ? null : index)}
+                    stroke={PALETTE[i % PALETTE.length]}
+                    strokeWidth={isHover ? 22 : 16}
+                    strokeDasharray={`${Math.max(dash - 2, 0)} ${circumference}`}
+                    className={`cursor-pointer transition-all duration-300 ${dim ? "opacity-25" : ""}`}
+                    style={{ transformOrigin: "center", transformBox: "fill-box", transform: `rotate(${rot}deg)` }}
+                    onMouseEnter={() => setHovered(i)}
+                    onMouseLeave={() => setHovered(null)}
+                    onClick={() => setHovered(isHover ? null : i)}
                   />
                 );
               })}
             </svg>
           </div>
+
+          {/* Legend */}
+          <ul className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-x-3 gap-y-1">
+            {chartData.map((item, i) => (
+              <li
+                key={item.label}
+                onMouseEnter={() => setHovered(i)}
+                onMouseLeave={() => setHovered(null)}
+                className={`flex items-center justify-between rounded-lg px-3 py-1.5 text-sm cursor-pointer transition ${
+                  hovered === i ? "bg-gray-50 dark:bg-white/5" : ""
+                } ${hovered !== null && hovered !== i ? "opacity-50" : ""}`}
+              >
+                <span className="flex items-center gap-2.5 min-w-0">
+                  <span className="h-2.5 w-2.5 rounded-full shrink-0" style={{ backgroundColor: PALETTE[i % PALETTE.length] }} />
+                  <span className="truncate text-gray-600 dark:text-gray-300">{item.label}</span>
+                </span>
+                <span className="font-semibold text-gray-900 dark:text-white">{item.value}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>

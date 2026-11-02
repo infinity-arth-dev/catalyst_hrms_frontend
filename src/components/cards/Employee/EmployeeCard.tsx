@@ -16,7 +16,7 @@ export default function EmployeeCard({ employee, onClick }: Props) {
             className="group relative bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer overflow-hidden"
         >
             {/* Status Indicator Bar */}
-            <div className={`absolute top-0 left-0 w-full h-1.5 ${isActive ? 'bg-brand-green dark:bg-brand-blue/50]' : 'bg-gray-300 dark:bg-gray-600'}`} />
+            <div className={`absolute top-0 left-0 w-full h-1.5 ${isActive ? 'bg-brand-blue dark:bg-brand-blue/50]' : 'bg-gray-300 dark:bg-gray-600'}`} />
 
             <div className="flex flex-col items-center text-center mt-2">
                 {/* Avatar */}

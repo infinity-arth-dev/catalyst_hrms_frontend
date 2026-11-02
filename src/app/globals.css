@@ -6,13 +6,12 @@
 @theme {
   --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
 
-  --color-brand-blue: #2076C7;
-  --color-brand-green: #1CADA3;
+  --color-brand-blue: #0CA3EA;
+  --color-brand-orange: #F96030;
+  --color-brand-green: #10B981;
 
-  --color-magenta: #FE02C5;
-  --color-primary: #1A0F1E;
-  --color-secondary: #544B57;
-  --color-lavender: #E6B3FF;
+  --color-primary: #0F172A;
+  --color-secondary: #64748B;
   --color-white: #FFFFFF;
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
@@ -35,14 +34,14 @@
 
 /* 2. Define your Light Mode variables */
 :root {
-  --color-background: #F7F5F7;
-  --color-text-base: #1A0F1E;
+  --color-background: #F8FAFC;
+  --color-text-base: #0F172A;
 }
 
 /* 3. Define your Dark Mode variables */
 .dark {
-  --color-background: #0F0B13;
-  --color-text-base: #FFFFFF;
+  --color-background: #090D16;
+  --color-text-base: #F8FAFC;
 }
 
 /* 4. Apply the variables */
@@ -63,24 +62,42 @@ body {
 }
 
 *::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #2076C7, #1CADA3);
+  background: #0CA3EA;
   border-radius: 10px;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #185E9F, #158C84);
+  background: #0284C7;
 }
 
 *::-webkit-scrollbar-thumb:horizontal {
-  background: linear-gradient(to right, #2076C7, #1CADA3);
+  background: #0CA3EA;
 }
 
 *::-webkit-scrollbar-thumb:horizontal:hover {
-  background: linear-gradient(to right, #185E9F, #158C84);
+  background: #0284C7;
 }
 
 /* Firefox & Standard CSS Fallback */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #1CADA3 transparent;
+  scrollbar-color: #0CA3EA transparent;
+}
+
+/* Universal Solid Brand Blue for all gradient buttons and elements */
+.bg-gradient-to-r.from-brand-blue.to-brand-green,
+.bg-gradient-to-l.from-brand-blue.to-brand-green,
+.bg-gradient-to-tr.from-brand-blue.to-brand-green,
+.bg-gradient-to-t.from-brand-blue.to-brand-green {
+  background-image: none !important;
+  background-color: var(--color-brand-blue) !important;
+  box-shadow: 0 4px 14px 0 rgba(12, 163, 234, 0.3) !important;
+}
+
+.bg-gradient-to-r.from-brand-blue.to-brand-green:hover,
+.bg-gradient-to-l.from-brand-blue.to-brand-green:hover,
+.bg-gradient-to-tr.from-brand-blue.to-brand-green:hover,
+.bg-gradient-to-t.from-brand-blue.to-brand-green:hover {
+  background-color: #0b93d3 !important;
+  box-shadow: 0 6px 18px 0 rgba(12, 163, 234, 0.4) !important;
 }

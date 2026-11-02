@@ -258,7 +258,7 @@ export const UpsertAlertModal: React.FC<UpsertAlertModalProps> = ({
                         type="submit"
                         form="upsert-alert-form"
                         disabled={isSubmitting}
-                        className="flex items-center gap-2 bg-gradient-to-r from-brand-blue to-brand-green hover:opacity-90 text-white px-5 py-2 text-sm font-semibold rounded-xl transition-opacity shadow-sm disabled:opacity-50 cursor-pointer"
+                        className="flex items-center gap-2 bg-brand-blue hover:opacity-95 shadow-md shadow-brand-blue/30 hover:opacity-90 text-white px-5 py-2 text-sm font-semibold rounded-xl transition-opacity shadow-sm disabled:opacity-50 cursor-pointer"
                     >
                         {isSubmitting ? (
                             <>

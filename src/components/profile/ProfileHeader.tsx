@@ -48,7 +48,7 @@ export default function ProfileHeader({ idCode, isActive, employeeAccount }: Pro
       <div className="flex flex-col md:flex-row items-center md:items-start gap-6 pb-6 border-b border-gray-100 dark:border-gray-800">
 
         {/* Profile Avatar Frame with Active System Badge Indicator */}
-        <div className="relative flex items-center justify-center w-24 h-24 rounded-2xl bg-gradient-to-tr from-brand-blue to-brand-green text-white font-bold text-3xl shadow-lg tracking-wider shrink-0 select-none">
+        <div className="relative flex items-center justify-center w-24 h-24 rounded-2xl bg-brand-blue shadow-md shadow-brand-blue/30 text-white font-bold text-3xl shadow-lg tracking-wider shrink-0 select-none">
           {initials}
           {isActive && (
             <div className="absolute -bottom-1 -right-1 bg-emerald-500 border-4 border-white dark:border-primary w-6 h-6 rounded-full flex items-center justify-center" title="HR System Active Pointer">

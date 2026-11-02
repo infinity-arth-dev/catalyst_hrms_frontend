@@ -11,7 +11,7 @@ const montserrat = Montserrat({
 
 export const metadata: Metadata = {
   title: "IA HRMS",
-  description: "Infinity Arthvishva HRMS System",
+  description: "Catalyst Biomedical  HRMS System",
 };
 
 export default function RootLayout({

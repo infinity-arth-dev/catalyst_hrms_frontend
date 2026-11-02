@@ -19,10 +19,10 @@ export interface RawDepartmentStat {
 const COLORS: Record<string, string> = {
     // Original Core
     director: "#1E3A8A",
-    engineering: "#3B82F6",       // Blue
+    engineering: "#0CA3EA",       // Blue
     sales: "#10B981",             // Emerald
     marketing: "#F59E0B",         // Amber
-    hr: "#EF4444",                // Red
+    hr: "#0CA3EA",                // Red
     design: "#8B5CF6",            // Violet
     finance: "#14B8A6",           // Teal
     operations: "#F97316",        // Orange
@@ -34,7 +34,7 @@ const COLORS: Record<string, string> = {
     "office boy": "#78716C",      // Stone
     "wealth advisor": "#059669",  // Dark Emerald
     bdm: "#BE123C",               // Dark Rose
-    unassigned: "#9CA3AF",        // Light Gray
+    unassigned: "#F96030",        // Light Gray
     other: "#6B7280",             // Gray
 };
 

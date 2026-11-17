@@ -1,20 +1,30 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  MapPin, Shield, Fingerprint, Star, FileText, Loader2, CalendarDays, CheckCircle
-} from 'lucide-react';
+  MapPin,
+  Shield,
+  Fingerprint,
+  Star,
+  FileText,
+  Loader2,
+  CalendarDays,
+  CheckCircle,
+  ScanFace,
+} from "lucide-react";
+import toast from "react-hot-toast";
 
 // Hooks & Components
-import { useCheckIn } from '@/hooks/portal-hooks/attendance-hooks/useCheckIn';
-import FaceVerification from '@/components/portal/attendance/FaceVerification';
-import WorkModeSelector from '@/components/portal/attendance/WorkModeSelector';
-import GeoLocationBadge from '@/components/portal/attendance/GeoLocationBadge';
-import LiveTimer from '@/components/portal/attendance/LiveTimer';
-import CheckOutReportModal from '@/components/portal/attendance/CheckOutReportModal';
+import { useCheckIn } from "@/hooks/portal-hooks/attendance-hooks/useCheckIn";
+import FaceVerification from "@/components/portal/attendance/FaceVerification";
+import FaceRegistrationModal from "@/components/portal/profile/FaceRegistrationModal";
+import WorkModeSelector from "@/components/portal/attendance/WorkModeSelector";
+import GeoLocationBadge from "@/components/portal/attendance/GeoLocationBadge";
+import LiveTimer from "@/components/portal/attendance/LiveTimer";
+import CheckOutReportModal from "@/components/portal/attendance/CheckOutReportModal";
 
 export default function AttendancePage() {
   const router = useRouter();
@@ -22,8 +32,18 @@ export default function AttendancePage() {
 
   // Modal States
   const [isFaceModalOpen, setIsFaceModalOpen] = useState(false);
-  const [faceActionType, setFaceActionType] = useState<'checkin' | 'checkout'>('checkin');
+  const [isFaceRegisterOpen, setIsFaceRegisterOpen] = useState(false);
+  const [faceActionType, setFaceActionType] = useState<"checkin" | "checkout">(
+    "checkin",
+  );
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+
+  // Check if face is registered in user data
+  const isFaceRegistered = Boolean(
+    Array.isArray(user?.faceDescriptors) &&
+    user.faceDescriptors.length > 0 &&
+    user.faceDescriptors[0]?.length > 0
+  );
 
   // Initialize Check-In Hook
   const {
@@ -39,36 +59,46 @@ export default function AttendancePage() {
     loadingConfig,
     fetchGeo,
     submitCheckIn,
-    submitCheckOut
+    submitCheckOut,
   } = useCheckIn(() => {
     // Optionally redirect, or just let the local state update to show "Shift Complete"
-    // router.push('/portal/attendance/logs'); 
+    // router.push('/portal/attendance/logs');
   });
 
   // Load user data for Face Verification
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
+    const storedUser = localStorage.getItem("user");
     if (storedUser) setUser(JSON.parse(storedUser));
   }, []);
+
+  const handleFaceRegisteredSuccess = () => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) setUser(JSON.parse(storedUser));
+  };
 
   // --- FLOW TRIGGERS ---
 
   // 1. User clicks "Secure Check In"
   const initCheckIn = () => {
-    setFaceActionType('checkin');
+    if (!isFaceRegistered) {
+      toast.error("Face ID not registered. Please register your face first.");
+      setIsFaceRegisterOpen(true);
+      return;
+    }
+    setFaceActionType("checkin");
     setIsFaceModalOpen(true);
   };
 
   // 2. User clicks "Check Out" from the LiveTimer
   const initCheckOut = () => {
-    setFaceActionType('checkout');
+    setFaceActionType("checkout");
     setIsFaceModalOpen(true);
   };
 
   // 3. Face Verification returns success
   const handleFaceSuccess = () => {
     setIsFaceModalOpen(false);
-    if (faceActionType === 'checkin') {
+    if (faceActionType === "checkin") {
       submitCheckIn(); // Directly submit check-in
     } else {
       setIsReportModalOpen(true); // Open the report modal for check-out
@@ -82,13 +112,17 @@ export default function AttendancePage() {
   };
 
   // --- HELPERS ---
-  const todayDate = new Date().toLocaleDateString('en-GB', {
-    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-  }).toUpperCase();
+  const todayDate = new Date()
+    .toLocaleDateString("en-GB", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
+    .toUpperCase();
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-6 pb-12">
-
       {/* 1. Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4">
         <div>
@@ -109,7 +143,11 @@ export default function AttendancePage() {
             <span className="hidden sm:inline">My Logs</span>
           </Link>
 
-          <GeoLocationBadge status={geoStatus} distance={geoDistance} workMode={workMode} />
+          <GeoLocationBadge
+            status={geoStatus}
+            distance={geoDistance}
+            workMode={workMode}
+          />
 
           <button
             onClick={fetchGeo}
@@ -123,7 +161,7 @@ export default function AttendancePage() {
 
       {/* 2. Permission Banner */}
       <AnimatePresence>
-        {geoStatus === 'permission_denied' && (
+        {geoStatus === "permission_denied" && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -135,14 +173,49 @@ export default function AttendancePage() {
                 <MapPin size={18} color="#fff" />
               </div>
               <div>
-                <p className="text-sm font-bold text-red-900 dark:text-red-400">Location access required</p>
+                <p className="text-sm font-bold text-red-900 dark:text-red-400">
+                  Location access required
+                </p>
                 <p className="text-xs font-medium text-red-700 dark:text-red-300 mt-0.5">
-                  Click the 🔒 icon in your browser's address bar to allow location.
+                  Click the 🔒 icon in your browser's address bar to allow
+                  location.
                 </p>
               </div>
             </div>
-            <button onClick={fetchGeo} className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-lg transition-colors whitespace-nowrap">
+            <button
+              onClick={fetchGeo}
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-lg transition-colors whitespace-nowrap"
+            >
               Retry Location
+            </button>
+          </motion.div>
+        )}
+        {!isFaceRegistered && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center text-white shrink-0">
+                <ScanFace size={20} />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-amber-900 dark:text-amber-400">
+                  Face ID Not Registered
+                </p>
+                <p className="text-xs font-medium text-amber-700 dark:text-amber-300 mt-0.5">
+                  You must register your face biometrics before marking check-in
+                  or check-out.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setIsFaceRegisterOpen(true)}
+              className="px-4 py-2 bg-gradient-to-r from-brand-orange to-orange-600 hover:brightness-105 text-white text-xs font-bold rounded-xl transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 shadow-sm"
+            >
+              <ScanFace size={14} />+ Add Face Registration
             </button>
           </motion.div>
         )}
@@ -150,7 +223,6 @@ export default function AttendancePage() {
 
       {/* 3. Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
         {/* Left: Hero Action Card */}
         <div className="lg:col-span-2 relative bg-gradient-to-br from-[#0F1E3C] via-[#183e7a] to-[#0D4A48] rounded-[2rem] p-8 md:p-12 text-white overflow-hidden shadow-2xl flex flex-col items-center justify-center min-h-[400px]">
           {/* Decorative Orbs */}
@@ -160,11 +232,12 @@ export default function AttendancePage() {
           {loadingConfig ? (
             <div className="flex flex-col items-center z-10">
               <Loader2 size={36} className="animate-spin text-white/50 mb-4" />
-              <p className="text-sm font-medium text-white/70">Initializing secure portal...</p>
+              <p className="text-sm font-medium text-white/70">
+                Initializing secure portal...
+              </p>
             </div>
           ) : (
             <div className="z-10 w-full flex flex-col items-center">
-
               {/* STATE A: CHECKED IN (Show Timer) */}
               {todayRecord?.inTime && !todayRecord?.outTime && (
                 <LiveTimer
@@ -177,12 +250,20 @@ export default function AttendancePage() {
 
               {/* STATE B: ALREADY CHECKED OUT (Shift Complete) */}
               {todayRecord?.inTime && todayRecord?.outTime && (
-                <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center">
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="text-center"
+                >
                   <div className="w-20 h-20 bg-brand-green/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-brand-green/30">
                     <CheckCircle size={36} className="text-brand-green" />
                   </div>
-                  <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-2">Shift Complete 🎉</h2>
-                  <p className="text-white/60 text-sm">You have successfully logged your attendance for today.</p>
+                  <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-2">
+                    Shift Complete 🎉
+                  </h2>
+                  <p className="text-white/60 text-sm">
+                    You have successfully logged your attendance for today.
+                  </p>
                 </motion.div>
               )}
 
@@ -201,63 +282,89 @@ export default function AttendancePage() {
                     </div>
                   </div>
 
-                  <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-3 text-center">Ready to Begin?</h2>
+                  <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-3 text-center">
+                    Ready to Begin?
+                  </h2>
                   <p className="text-sm text-white/60 text-center max-w-sm mb-8 leading-relaxed">
-                    {workMode === 'Office'
+                    {workMode === "Office"
                       ? "Ensure you're within the office zone, then check in securely with face verification."
                       : `Check in securely from any location using ${workMode} mode.`}
                   </p>
 
                   <div className="flex flex-col items-center w-full max-w-xs gap-6">
-                    <WorkModeSelector currentMode={workMode} onModeChange={setWorkMode} />
+                    <WorkModeSelector
+                      currentMode={workMode}
+                      onModeChange={setWorkMode}
+                    />
 
                     <button
                       onClick={initCheckIn}
                       disabled={!canAct || actionLoading}
-                      className={`w-full py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-all duration-300 ${canAct
-                          ? 'bg-white text-[#0F1E3C] shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:shadow-[0_8px_40px_rgba(0,0,0,0.2)] hover:-translate-y-0.5 active:scale-95'
-                          : 'bg-white/10 text-white/40 cursor-not-allowed'
-                        }`}
+                      className={`w-full py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-all duration-300 ${
+                        canAct
+                          ? "bg-white text-[#0F1E3C] shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:shadow-[0_8px_40px_rgba(0,0,0,0.2)] hover:-translate-y-0.5 active:scale-95"
+                          : "bg-white/10 text-white/40 cursor-not-allowed"
+                      }`}
                     >
-                      {actionLoading ? <Loader2 size={18} className="animate-spin" /> : <Shield size={18} />}
+                      {actionLoading ? (
+                        <Loader2 size={18} className="animate-spin" />
+                      ) : (
+                        <Shield size={18} />
+                      )}
                       Secure Check In
                     </button>
 
                     {/* Sub-hint for disabled states */}
                     {!canAct && !actionLoading && (
                       <p className="text-xs text-white/50 text-center mt-[-10px]">
-                        {geoStatus === 'checking' && '📡 Verifying your location...'}
-                        {geoStatus === 'invalid' && workMode === 'Office' && `📍 You are ${geoDistance}m from office (out of range)`}
-                        {geoStatus === 'error' && '⚠️ GPS unavailable — tap refresh above'}
+                        {geoStatus === "checking" &&
+                          "📡 Verifying your location..."}
+                        {geoStatus === "invalid" &&
+                          workMode === "Office" &&
+                          `📍 You are ${geoDistance}m from office (out of range)`}
+                        {geoStatus === "error" &&
+                          "⚠️ GPS unavailable — tap refresh above"}
                       </p>
                     )}
                   </div>
                 </motion.div>
               )}
-
             </div>
           )}
         </div>
 
         {/* Right: Side Panel Info */}
         <div className="flex flex-col gap-5">
-
           {/* Office Zone Config Card */}
           {config && (
             <div className="bg-white dark:bg-primary border border-gray-100 dark:border-gray-800 rounded-2xl p-6 shadow-sm">
               <div className="flex items-center gap-2 mb-4">
-                <MapPin size={14} className="text-secondary dark:text-gray-400" />
-                <h3 className="text-xs font-bold text-secondary dark:text-gray-400 uppercase tracking-widest">Office Zone</h3>
+                <MapPin
+                  size={14}
+                  className="text-secondary dark:text-gray-400"
+                />
+                <h3 className="text-xs font-bold text-secondary dark:text-gray-400 uppercase tracking-widest">
+                  Office Zone
+                </h3>
               </div>
               <div className="flex items-center gap-4">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${geoStatus === 'valid' ? 'bg-green-50 text-green-600 dark:bg-green-500/10 dark:text-green-400' : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
-                  }`}>
+                <div
+                  className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${
+                    geoStatus === "valid"
+                      ? "bg-green-50 text-green-600 dark:bg-green-500/10 dark:text-green-400"
+                      : "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400"
+                  }`}
+                >
                   <MapPin size={20} />
                 </div>
                 <div>
-                  <p className="font-bold text-primary dark:text-white text-sm">Radius: {config.radius_meters}m</p>
+                  <p className="font-bold text-primary dark:text-white text-sm">
+                    Radius: {config.radius_meters}m
+                  </p>
                   <p className="text-xs font-medium text-secondary dark:text-gray-500 mt-1">
-                    {geoStatus === 'checking' ? 'Calculating distance...' : `You are ${geoDistance}m away`}
+                    {geoStatus === "checking"
+                      ? "Calculating distance..."
+                      : `You are ${geoDistance}m away`}
                   </p>
                 </div>
               </div>
@@ -268,7 +375,9 @@ export default function AttendancePage() {
           <div className="bg-white dark:bg-primary border border-gray-100 dark:border-gray-800 rounded-2xl p-6 shadow-sm flex-1">
             <div className="flex items-center gap-2 mb-5">
               <Star size={14} className="text-secondary dark:text-gray-400" />
-              <h3 className="text-xs font-bold text-secondary dark:text-gray-400 uppercase tracking-widest">Quick Tips</h3>
+              <h3 className="text-xs font-bold text-secondary dark:text-gray-400 uppercase tracking-widest">
+                Quick Tips
+              </h3>
             </div>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
@@ -278,20 +387,27 @@ export default function AttendancePage() {
                 </p>
               </li>
               <li className="flex items-start gap-3">
-                <MapPin size={16} className="text-brand-green shrink-0 mt-0.5" />
+                <MapPin
+                  size={16}
+                  className="text-brand-green shrink-0 mt-0.5"
+                />
                 <p className="text-xs font-medium text-secondary dark:text-gray-400 leading-relaxed">
-                  Stay within {config?.radius_meters || 50}m of the office coordinates for standard check-ins.
+                  Stay within {config?.radius_meters || 50}m of the office
+                  coordinates for standard check-ins.
                 </p>
               </li>
               <li className="flex items-start gap-3">
-                <FileText size={16} className="text-amber-500 shrink-0 mt-0.5" />
+                <FileText
+                  size={16}
+                  className="text-amber-500 shrink-0 mt-0.5"
+                />
                 <p className="text-xs font-medium text-secondary dark:text-gray-400 leading-relaxed">
-                  You will be prompted to submit a work summary when checking out later today.
+                  You will be prompted to submit a work summary when checking
+                  out later today.
                 </p>
               </li>
             </ul>
           </div>
-
         </div>
       </div>
 
@@ -303,7 +419,11 @@ export default function AttendancePage() {
         userDescriptor={user?.faceDescriptors}
         actionType={faceActionType}
       />
-
+      <FaceRegistrationModal
+        isOpen={isFaceRegisterOpen}
+        onClose={() => setIsFaceRegisterOpen(false)}
+        onSuccess={handleFaceRegisteredSuccess}
+      />
       <CheckOutReportModal
         isOpen={isReportModalOpen}
         onClose={() => setIsReportModalOpen(false)}
@@ -311,7 +431,6 @@ export default function AttendancePage() {
         managers={managers}
         isLoading={actionLoading}
       />
-
     </div>
   );
 }

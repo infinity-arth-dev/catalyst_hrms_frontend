@@ -1,12 +1,14 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useEmployeeProfile } from '@/hooks/portal-hooks/profile-hooks/useEmployeeProfile';
 import { DataField, DocumentRow } from '@/components/elements/EmployeeDisplayElements';
-import { User, MapPin, Briefcase, GraduationCap, ShieldCheck } from 'lucide-react';
+import { User, MapPin, Briefcase, GraduationCap, ShieldCheck, ScanFace, AlertCircle } from 'lucide-react';
+import FaceRegistrationModal from '@/components/portal/profile/FaceRegistrationModal';
 
 export default function ProfilePage() {
-  const { employee, loading, formatDate, displayValue } = useEmployeeProfile();
+  const { employee, loading, isFaceRegistered, fetchProfile, formatDate, displayValue } = useEmployeeProfile();
+  const [isFaceModalOpen, setIsFaceModalOpen] = useState(false);
 
   if (loading) {
     return (
@@ -67,6 +69,22 @@ export default function ProfilePage() {
             <span className="px-3 py-1 bg-blue-50 dark:bg-blue-500/10 text-brand-blue dark:text-blue-400 font-bold rounded-lg text-xs uppercase tracking-wider border border-blue-100 dark:border-blue-500/20">
               {displayValue(employee.department)}
             </span>
+              {/* Face Registration Status / Add Button */}
+            {isFaceRegistered ? (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold rounded-lg text-xs uppercase tracking-wider border border-emerald-100 dark:border-emerald-500/20">
+                <ShieldCheck size={14} className="text-emerald-600 dark:text-emerald-400" />
+                Face ID Registered
+              </span>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsFaceModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold rounded-lg text-xs uppercase tracking-wider shadow-sm hover:shadow transition-all cursor-pointer"
+              >
+                <ScanFace size={14} />
+                + Add Face ID
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -184,6 +202,61 @@ export default function ProfilePage() {
           <DocumentRow title="Medical Document" fileUrl={employee.medicalDocumentUrl} />
         </div>
       </div>
+
+    
+      {/* 9. Biometrics & Attendance Security */}
+      <div className="bg-white dark:bg-primary border border-gray-100 dark:border-gray-800 rounded-2xl shadow-sm overflow-hidden transition-colors">
+        <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 px-6 py-4 bg-gray-50/50 dark:bg-gray-800/30">
+          <div className="flex items-center gap-2">
+            <ScanFace size={16} className="text-brand-blue dark:text-blue-400" />
+            <h3 className="text-xs font-bold text-secondary dark:text-gray-400 uppercase tracking-widest">
+              Biometrics & Attendance Security
+            </h3>
+          </div>
+          {isFaceRegistered ? (
+            <span className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+              <ShieldCheck size={14} /> Registered & Active
+            </span>
+          ) : (
+            <span className="flex items-center gap-1.5 text-xs font-bold text-amber-600 dark:text-amber-400">
+              <AlertCircle size={14} /> Action Required
+            </span>
+          )}
+        </div>
+        <div className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h4 className="text-sm font-bold text-gray-900 dark:text-white">
+              {isFaceRegistered ? "Facial Biometrics Enrolled" : "Facial Biometrics Not Registered"}
+            </h4>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-xl">
+              {isFaceRegistered
+                ? "Your face biometrics are securely registered for automated check-in and check-out in the attendance portal."
+                : "Your face biometrics are not enrolled yet. Please register your face to enable seamless punch-in and check-out."}
+            </p>
+          </div>
+
+          {!isFaceRegistered && (
+            <button
+              type="button"
+              onClick={() => setIsFaceModalOpen(true)}
+              className="px-5 py-2.5 bg-gradient-to-r from-brand-orange to-orange-600 hover:brightness-105 text-white text-xs font-bold rounded-xl flex items-center gap-2 shadow-md hover:shadow-lg transition-all cursor-pointer whitespace-nowrap shrink-0"
+            >
+              <ScanFace size={16} />
+              + Add Face Registration
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Face Registration Modal */}
+      <FaceRegistrationModal
+        isOpen={isFaceModalOpen}
+        onClose={() => setIsFaceModalOpen(false)}
+        onSuccess={() => {
+          fetchProfile();
+        }}
+      />
+
 
     </div>
   );

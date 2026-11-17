@@ -55,10 +55,10 @@ export const useApplyReimbursement = (onSuccess: () => void) => {
             toast.error('Please provide a reason for the expense.');
             return;
         }
-        if (!proofFile) {
-            toast.error('A physical receipt image proof is mandatory.');
-            return;
-        }
+        // if (!proofFile) {
+        //     toast.error('A physical receipt image proof is mandatory.');
+        //     return;
+        // }
 
         setIsSubmitting(true);
         const loadingToast = toast.loading('Submitting reimbursement claim...');
@@ -69,7 +69,7 @@ export const useApplyReimbursement = (onSuccess: () => void) => {
             formData.append('amount', amount);
             formData.append('expenseDate', expenseDate);
             formData.append('reason', reason);
-            formData.append('proof', proofFile); // 'proof' matches your backend FileInterceptor key
+            // formData.append('proof', proofFile); // 'proof' matches your backend FileInterceptor key
 
             await employeeReimbursementService.applyClaim(formData);
 

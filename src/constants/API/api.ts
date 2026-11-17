@@ -126,6 +126,7 @@ export const EMPLOYEE_API = {
   GET_REIMBURSEMENT_HISTORY: '/api/web/reimbursement/history',
   APPLY_REIMBURSEMENT: '/api/web/reimbursement/apply',
   CANCEL_REIMBURSEMENT: (id: string) => `/api/web/reimbursement/${id}`,
+   REGISTER_FACE: '/api/web/employee/face',
 };
 
 export const MANAGER_API = {

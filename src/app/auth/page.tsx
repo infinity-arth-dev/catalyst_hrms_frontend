@@ -297,7 +297,7 @@ export default function LoginPage() {
                     type="text"
                     autoFocus
                     autoComplete="username"
-                    placeholder="e.g. IA00141"
+                    placeholder="e.g. CB00141"
                     value={employeeCode}
                     onChange={(e) => setEmployeeCode(e.target.value.toUpperCase())}
                     maxLength={9}

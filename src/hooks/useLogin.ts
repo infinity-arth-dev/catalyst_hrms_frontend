@@ -23,20 +23,20 @@ export const useLogin = () => {
         }
 
         // Updated Regex: The '?' makes (HR|DT) optional. 
-        const codeRegex = /^IA(HR|DT)?\d{3,5}$/;
+        const codeRegex = /^CB(HR|DT)?\d{3,5}$/;
 
         // const codeRegex = /^IA(HR|DT)\d{3}$/;
 
         if (!codeRegex.test(employeeCode)) {
-            setError("Invalid code format. Expected: IA00141, IAHR001, or IADT001.");
+            setError("Invalid code format. Expected: CB00141, CBHR001, or CBDT001.");
             setLoading(false);
             return;
         }
 
         try {
             // Determine the role based on the prefix
-            const isHR = employeeCode.startsWith("IAHR");
-            const isDirector = employeeCode.startsWith("IADT");
+            const isHR = employeeCode.startsWith("CBHR");
+            const isDirector = employeeCode.startsWith("CBDT");
 
             let data;
             let roleToStore = "EMPLOYEE"; // Default fallback

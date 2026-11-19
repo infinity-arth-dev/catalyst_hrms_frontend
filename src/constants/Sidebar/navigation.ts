@@ -61,12 +61,12 @@ export const DASHBOARD_NAV = [
                 icon: HandCoins,
                 requiredRoles: ["HR", "DIRECTOR"],
             },
-            {
-                title: "Gurukul Admin",
-                url: "/dashboard/gurukul",
-                icon: GraduationCap,
-                requiredRoles: ["HR", "DIRECTOR"],
-            },
+            // {
+            //     title: "Gurukul Admin",
+            //     url: "/dashboard/gurukul",
+            //     icon: GraduationCap,
+            //     requiredRoles: ["HR", "DIRECTOR"],
+            // },
             {
                 title: "Announcements",
                 url: "/dashboard/announcements",
@@ -81,13 +81,13 @@ export const DASHBOARD_NAV = [
             },
 
             
-            {
-                title: "Complaints",
-                url: "/dashboard/complaints",
-                icon: FileTerminal,
-                requiredRoles: ["HR", "DIRECTOR"],
-                excludedRoles: ["HR"], // <-- Add this
-            },
+            // {
+            //     title: "Complaints",
+            //     url: "/dashboard/complaints",
+            //     icon: FileTerminal,
+            //     requiredRoles: ["HR", "DIRECTOR"],
+            //     excludedRoles: ["HR"], // <-- Add this
+            // },
             // {
             //     title: "Resignation",
             //     url: "/dashboard/resignations",

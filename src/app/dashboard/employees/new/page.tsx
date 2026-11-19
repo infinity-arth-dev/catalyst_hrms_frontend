@@ -127,7 +127,7 @@ export default function AddEmployeePage() {
                         <FormSelect name="role" label="Role (Access Level)" error={errors.role} value={formData.role} onChange={handleChange} options={[{ label: 'Employee', value: 'Employee' }, { label: 'Intern', value: 'Intern' }]} required />
                         <FormSelect name="department" label="Department" error={errors.department} value={formData.department} onChange={handleChange} options={departments.filter(d => d.isActive !== false).map(d => ({ label: d.name.toUpperCase(), value: d.name.toUpperCase() }))} required />
                         <FormSelect name="position" label="Position" error={errors.position} value={formData.position} onChange={handleChange} options={positions.filter(p => p.isActive !== false).map(p => ({ label: p.name.toUpperCase(), value: p.name.toUpperCase() }))} required />
-                        <FormSelect name="managerId" label="Reporting Manager" error={errors.managerId} value={formData.managerId} onChange={handleChange} options={managerOptions} required />
+                        <FormSelect name="managerId" label="Reporting Manager" error={errors.managerId} value={formData.managerId} onChange={handleChange} options={managerOptions} />
                         <FormInput name="salary" label="Base Salary (₹)" error={errors.salary} type="number" value={formData.salary} onChange={handleChange} textTransform="none" placeholder='30000' required />
                         <FormInput name="fixedAllowance" label="Fixed Allowance (₹)" error={errors.fixedAllowance} type="number" value={formData.fixedAllowance} onChange={handleChange} textTransform="none" placeholder='5000' />
                         <div className="flex items-center space-x-2 mt-7">
@@ -177,32 +177,39 @@ export default function AddEmployeePage() {
                     <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-5 border-b border-gray-200 dark:border-gray-700 pb-2">Identity & Banking</h3>
 
                     {/* Aadhaar Card */}
-                    <div className={`mb-5 p-5 rounded-2xl border transition-all overflow-hidden ${aadhaarVerified ? 'bg-emerald-50/30 dark:bg-emerald-950/10 border-emerald-200 dark:border-emerald-800' : 'bg-white dark:bg-gray-900/40 border-gray-100 dark:border-gray-800'} shadow-sm`}>
-                        <div className="flex flex-wrap items-end gap-6">
-                            <div className="w-full sm:flex-1 min-w-0 max-w-full">
-                                <div className="flex items-center justify-between">
-                                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Aadhaar Number <span className="text-red-500">*</span></label>
-                                    {aadhaarVerified && <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">🔒 Locked</span>}
-                                </div>
-                                <input name="aadhaarNumber" value={formData.aadhaarNumber} onChange={handleChange} type="text" inputMode="numeric" pattern="[0-9]*" maxLength={12} placeholder="XXXX XXXX XXXX" disabled={aadhaarVerified} readOnly={aadhaarVerified} className="mt-2 w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-blue disabled:bg-gray-100 dark:disabled:bg-gray-800/60 disabled:text-gray-500 disabled:cursor-not-allowed transition-all" />
-                            </div>
-
-                            <div className="flex gap-2 items-center pb-0.5">
-                                {aadhaarVerified ? (
-                                    <span className="flex items-center gap-1 px-5 py-3 rounded-xl bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-semibold border border-green-200 dark:border-green-800">✓ Verified</span>
-                                ) : !aadhaarOtpSent ? (
-                                    <button type="button" onClick={handleSendAadhaarOtp} disabled={aadhaarLoading} className="px-6 py-3 rounded-xl bg-teal-500 hover:bg-teal-600 disabled:opacity-50 text-white text-sm font-semibold whitespace-nowrap transition-colors cursor-pointer">{aadhaarLoading ? 'Sending...' : 'Get OTP'}</button>
-                                ) : (
-                                    <>
-                                        <input value={aadhaarOtp} onChange={e => setAadhaarOtp(e.target.value)} inputMode="numeric" maxLength={6} placeholder="Enter OTP" className="w-28 px-3 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-sm focus:outline-none" />
-                                        <button type="button" onClick={handleVerifyAadhaarOtp} disabled={aadhaarLoading} className="px-6 py-3 rounded-xl bg-teal-500 hover:bg-teal-600 disabled:opacity-50 text-white text-sm font-semibold whitespace-nowrap transition-colors cursor-pointer">{aadhaarLoading ? 'Verifying...' : 'Verify OTP'}</button>
-                                    </>
-                                )}
-                            </div>
-
-                            <div className="w-full sm:flex-1 min-w-0 max-w-full">
+                    <div className="mb-5 p-5 rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900/40 shadow-sm">
+                        <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-4 pb-2 border-b border-gray-100 dark:border-gray-800">
+                            Aadhaar Card Details
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-end">
+                            <FormInput
+                                name="aadhaarNumber"
+                                label="Aadhaar Number"
+                                value={formData.aadhaarNumber}
+                                onChange={handleChange}
+                                error={errors.aadhaarNumber}
+                                placeholder="123456789012"
+                                maxLength={12}
+                                required
+                            />
+                            <div className="w-full min-w-0 max-w-full">
                                 <FileSlot label="Aadhaar Scan" fileKey="aadhaarFile" onChange={handleFileChange} />
                             </div>
+                        </div>
+
+                        {/* KYC Aadhaar OTP Verification Flow (Commented for now) */}
+                        {/*
+                        <div className="flex gap-2 items-center pb-0.5 mt-4">
+                            {aadhaarVerified ? (
+                                <span className="flex items-center gap-1 px-5 py-3 rounded-xl bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-semibold border border-green-200 dark:border-green-800">✓ Verified</span>
+                            ) : !aadhaarOtpSent ? (
+                                <button type="button" onClick={handleSendAadhaarOtp} disabled={aadhaarLoading} className="px-6 py-3 rounded-xl bg-teal-500 hover:bg-teal-600 disabled:opacity-50 text-white text-sm font-semibold whitespace-nowrap transition-colors cursor-pointer">{aadhaarLoading ? 'Sending...' : 'Get OTP'}</button>
+                            ) : (
+                                <>
+                                    <input value={aadhaarOtp} onChange={e => setAadhaarOtp(e.target.value)} inputMode="numeric" maxLength={6} placeholder="Enter OTP" className="w-28 px-3 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-sm focus:outline-none" />
+                                    <button type="button" onClick={handleVerifyAadhaarOtp} disabled={aadhaarLoading} className="px-6 py-3 rounded-xl bg-teal-500 hover:bg-teal-600 disabled:opacity-50 text-white text-sm font-semibold whitespace-nowrap transition-colors cursor-pointer">{aadhaarLoading ? 'Verifying...' : 'Verify OTP'}</button>
+                                </>
+                            )}
                         </div>
                         {aadhaarError && <p className="text-xs text-red-500 mt-2">{aadhaarError}</p>}
                         {(aadhaarRegisteredName || (aadhaarVerified && (formData.aadhaarName || formData.name))) && (
@@ -214,62 +221,131 @@ export default function AddEmployeePage() {
                                 <button type="button" onClick={() => { setAadhaarOtpSent(false); setAadhaarOtp(''); setAadhaarError(''); setAadhaarReferenceId(''); }} className="text-xs font-semibold text-brand-blue hover:underline cursor-pointer">Change Aadhaar Number / Resend OTP</button>
                             </div>
                         )}
+                        */}
                     </div>
 
                     {/* PAN Card */}
-                    <div className={`mb-6 p-5 rounded-2xl border transition-all overflow-hidden ${panVerified ? 'bg-emerald-50/30 dark:bg-emerald-950/10 border-emerald-200 dark:border-emerald-800' : 'bg-white dark:bg-gray-900/40 border-gray-100 dark:border-gray-800'} shadow-sm`}>
-                        <div className="flex flex-wrap items-end gap-6">
-                            <div className="w-full sm:w-44 min-w-0">
-                                <div className="flex items-center justify-between">
-                                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">PAN Number <span className="text-red-500">*</span></label>
-                                    {panVerified && <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">🔒 Locked</span>}
-                                </div>
-                                <input name="panNumber" value={formData.panNumber} onChange={handleChange} placeholder="ABCDE1234G" maxLength={10} disabled={panVerified} readOnly={panVerified} style={{ textTransform: 'uppercase' }} className="mt-2 w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-blue disabled:bg-gray-100 dark:disabled:bg-gray-800/60 disabled:text-gray-500 disabled:cursor-not-allowed transition-all" />
-                            </div>
-
-                            <div className="w-full sm:flex-1 min-w-0 max-w-full">
-                                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Name as per PAN</label>
-                                <input value={panName} onChange={e => setPanName(e.target.value.toUpperCase())} placeholder="FULL NAME ON PAN CARD" disabled={panVerified} readOnly={panVerified} style={{ textTransform: 'uppercase' }} className="mt-2 w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue disabled:bg-gray-100 dark:disabled:bg-gray-800/60 disabled:text-gray-500 disabled:cursor-not-allowed transition-all" />
-                            </div>
-
-                            <div className="w-full sm:w-44 min-w-0">
-                                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Date of Birth</label>
-                                <input type="date" value={panDob} onChange={e => setPanDob(e.target.value)} disabled={panVerified} readOnly={panVerified} className="mt-2 w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue disabled:bg-gray-100 dark:disabled:bg-gray-800/60 disabled:text-gray-500 disabled:cursor-not-allowed transition-all" />
-                            </div>
-
-                            <div className="pb-0.5">
-                                {!panVerified ? (
-                                    <button type="button" onClick={handleVerifyPan} disabled={panLoading} className="px-6 py-3 rounded-xl bg-teal-500 hover:bg-teal-600 disabled:opacity-50 text-white text-sm font-semibold whitespace-nowrap transition-colors cursor-pointer">{panLoading ? 'Verifying...' : 'Verify'}</button>
-                                ) : (
-                                    <span className="flex items-center gap-1 px-5 py-3 rounded-xl bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-semibold border border-green-200 dark:border-green-800">✓ Verified</span>
-                                )}
-                            </div>
-
-                            <div className="w-full sm:flex-1 min-w-0 max-w-full">
+                    <div className="mb-6 p-5 rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900/40 shadow-sm">
+                        <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-4 pb-2 border-b border-gray-100 dark:border-gray-800">
+                            PAN Card Details
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-5 items-end">
+                            <FormInput
+                                name="panNumber"
+                                label="PAN Number"
+                                value={formData.panNumber}
+                                onChange={handleChange}
+                                error={errors.panNumber}
+                                placeholder="ABCDE1234F"
+                                maxLength={10}
+                                textTransform="uppercase"
+                                required
+                            />
+                            <FormInput
+                                name="panName"
+                                label="Name as per PAN"
+                                value={formData.panName || panName}
+                                onChange={(e) => {
+                                    handleChange(e);
+                                    setPanName(e.target.value.toUpperCase());
+                                }}
+                                placeholder="FULL NAME ON PAN CARD"
+                                textTransform="uppercase"
+                            />
+                            <FormInput
+                                name="panDob"
+                                label="Date of Birth"
+                                type="date"
+                                value={formData.panDob || panDob}
+                                onChange={(e) => {
+                                    handleChange(e);
+                                    setPanDob(e.target.value);
+                                }}
+                                textTransform="none"
+                            />
+                            <div className="w-full min-w-0 max-w-full">
                                 <FileSlot label="PAN Scan" fileKey="panFile" onChange={handleFileChange} />
                             </div>
                         </div>
+
+                        {/* KYC PAN Verification Flow (Commented for now) */}
+                        {/*
+                        <div className="pb-0.5 mt-4">
+                            {!panVerified ? (
+                                <button type="button" onClick={handleVerifyPan} disabled={panLoading} className="px-6 py-3 rounded-xl bg-teal-500 hover:bg-teal-600 disabled:opacity-50 text-white text-sm font-semibold whitespace-nowrap transition-colors cursor-pointer">{panLoading ? 'Verifying...' : 'Verify'}</button>
+                            ) : (
+                                <span className="flex items-center gap-1 px-5 py-3 rounded-xl bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-semibold border border-green-200 dark:border-green-800">✓ Verified</span>
+                            )}
+                        </div>
                         {panError && <p className="text-xs text-red-500 mt-2">{panError}</p>}
+                        */}
                     </div>
 
-                    {/* Bank Account Verification */}
-                    <div className={`p-5 rounded-2xl border transition-all overflow-hidden ${bankVerified ? 'bg-emerald-50/30 dark:bg-emerald-950/10 border-emerald-200 dark:border-emerald-800' : 'bg-white dark:bg-gray-900/40 border-gray-100 dark:border-gray-800'} shadow-sm`}>
+                    {/* Bank Account Details */}
+                    <div className="p-5 rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900/40 shadow-sm">
                         <div className="flex items-center justify-between mb-4 pb-2 border-b border-gray-100 dark:border-gray-800">
                             <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200">Bank Account Details</h4>
-                            {bankVerified && <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">🔒 Locked</span>}
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-end">
-                            <FormInput name="accountHolderName" label="Account Holder Name" placeholder='john doe' value={formData.accountHolderName} textTransform="uppercase" onChange={handleChange} required />
-                            <FormInput name="accountNumber" label="Account Number" type="number" value={formData.accountNumber} placeholder="1234567890" onChange={handleChange} disabled={bankVerified} textTransform="none" required />
-                            <FormInput name="ifsc" label="IFSC Code" value={formData.ifsc} onChange={handleChange} placeholder="BANK0000000" disabled={bankVerified} textTransform="uppercase" required />
-                            <FormInput name="bankName" label="Bank Name" value={formData.bankName} textTransform="uppercase" placeholder="STATE BANK OF INDIA" onChange={handleChange} required />
-                            <FormInput name="branch" label="Branch Name" value={formData.branch} placeholder="NEW DELHI" textTransform="uppercase" onChange={handleChange} required />
+                            <FormInput
+                                name="accountHolderName"
+                                label="Account Holder Name"
+                                placeholder="JOHN DOE"
+                                value={formData.accountHolderName}
+                                textTransform="uppercase"
+                                onChange={handleChange}
+                                error={errors.accountHolderName}
+                                required
+                            />
+                            <FormInput
+                                name="accountNumber"
+                                label="Account Number"
+                                type="number"
+                                value={formData.accountNumber}
+                                placeholder="1234567890"
+                                onChange={handleChange}
+                                error={errors.accountNumber}
+                                textTransform="none"
+                                required
+                            />
+                            <FormInput
+                                name="ifsc"
+                                label="IFSC Code"
+                                value={formData.ifsc}
+                                onChange={handleChange}
+                                placeholder="BANK0000000"
+                                error={errors.ifsc}
+                                textTransform="uppercase"
+                                required
+                            />
+                            <FormInput
+                                name="bankName"
+                                label="Bank Name"
+                                value={formData.bankName}
+                                textTransform="uppercase"
+                                placeholder="STATE BANK OF INDIA"
+                                error={errors.bankName}
+                                onChange={handleChange}
+                                required
+                            />
+                            <FormInput
+                                name="branch"
+                                label="Branch Name"
+                                value={formData.branch}
+                                placeholder="NEW DELHI"
+                                textTransform="uppercase"
+                                error={errors.branch}
+                                onChange={handleChange}
+                                required
+                            />
                             <div className="w-full min-w-0 max-w-full">
                                 <FileSlot label="Passbook/Cheque Copy" fileKey="passbookFile" onChange={handleFileChange} />
                             </div>
                         </div>
 
+                        {/* KYC Bank Verification Flow (Commented for now) */}
+                        {/*
                         <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 flex flex-wrap items-center justify-between gap-3">
                             <div>
                                 {bankError && <p className="text-xs text-red-500 font-medium">{bankError}</p>}
@@ -285,6 +361,7 @@ export default function AddEmployeePage() {
                                 )}
                             </div>
                         </div>
+                        */}
                     </div>
                 </section>
 

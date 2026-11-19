@@ -466,10 +466,10 @@ export const useAddEmployee = () => {
 
       data.append("panNumber", formData.panNumber.toUpperCase().trim());
       data.append("panVerified", String(formData.panVerified));
-      if (formData.panName) {
-        data.append("panName", formData.panName.toUpperCase().trim());
+      if (formData.panName || panName) {
+        data.append("panName", (formData.panName || panName).toUpperCase().trim());
       }
-      if (formData.panDob) data.append("panDob", formData.panDob);
+      if (formData.panDob || panDob) data.append("panDob", formData.panDob || panDob);
 
       // Banking
       data.append("accountHolderName", formData.accountHolderName.toUpperCase().trim());
